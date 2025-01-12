@@ -13,8 +13,9 @@
     --foreground: #ededed;
   }
 }
+
 body {
-  font-family: "Dancing Script", cursive;
+  font-family:cursive;
   font-optical-sizing: auto;
   font-weight: 500;
   font-style: normal;
