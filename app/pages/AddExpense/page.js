@@ -19,7 +19,7 @@ const AddExpense = () => {
         if (data.success) {
           setForm({ title: '', amount: '' });
           // fetchExpenses();
-          navigate.push('/');
+          navigate.push('/pages/Home1');
         }
       };
   return (

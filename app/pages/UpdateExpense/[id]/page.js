@@ -54,7 +54,7 @@ const UpdateExpense = ({params}) => {
       }
       else{
         
-        navigate.push('/')
+        navigate.push('/pages/Home1')
         // alert("Expense updated <su></su>ccessfully!");
       }
       const updatedData = await response.json();

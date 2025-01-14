@@ -1,6 +1,6 @@
-import Home1 from './pages/Home1/page'
+import Signup from './pages/Signup/page';
 export default function Home() {
   return (
-   <Home1/>
+   <Signup/>
   );
 }
