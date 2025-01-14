@@ -50,7 +50,7 @@ const AddExpense = () => {
         </div>
         
         <div className='flex justify-around'>
-        <Link href={"/"} className="bg-blue-500 px-2 py-1 rounded-xl text-white">Back</Link>
+        <Link href={"/pages/Home1"} className="bg-blue-500 px-2 py-1 rounded-xl text-white">Back</Link>
         <button type="submit" className="bg-green-500 px-2 py-1 rounded-xl text-white">Add Expense</button>
         </div>
       </form>
