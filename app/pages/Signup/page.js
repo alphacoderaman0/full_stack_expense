@@ -1,7 +1,6 @@
 "use client"
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 
 export default function Signup() {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
@@ -110,7 +109,7 @@ export default function Signup() {
           <div className="relative">
             {/* Toggle button for password visibility */}
             <p onClick={toggle} id="togglebtn" className='grayscale hover:grayscale-0 absolute top-2 left-96'>
-              <Image src="/images/view.png" alt="eye" width={30} />
+              <img src="/images/view.png" alt="eye" width={30} />
             </p>
             <input
               placeholder="Password"

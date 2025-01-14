@@ -2,8 +2,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
-
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -81,7 +79,7 @@ export default function Login() {
               id="togglebtn"
               className="grayscale hover:grayscale-0 absolute top-2 left-80"
             >
-              <Image id="eye" src="/images/eye.png" alt="eye" width={30} />
+              <img id="eye" src="/images/eye.png" alt="eye" width={30} />
             </p>
             <input
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -114,7 +112,7 @@ export default function Login() {
         </form>
 
         <div className="text-center text-gray-300">
-          Don't have an account?{' '}
+          Don't have an account?
           <Link className="text-purple-300 hover:underline" href="/pages/Signup">
             Sign up
           </Link>
