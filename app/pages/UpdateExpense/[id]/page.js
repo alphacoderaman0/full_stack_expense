@@ -53,9 +53,29 @@ const UpdateExpense = ({ params }) => {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
-
+  if (loading) return (
+    <div className="absolute right-1/2 bottom-1/2 transform translate-x-1/2 translate-y-1/2">
+    <div className="p-4 bg-gradient-to-tr animate-spin from-green-500 to-blue-500 via-purple-500 rounded-full">
+        <div className="bg-white rounded-full">
+            <div className="w-24 h-24 rounded-full"></div>
+        </div>
+    </div>
+    </div>
+    );
+    if (error) return(
+      <div className="w-full h-screen flex justify-center items-center sm:mx-20">
+      <div className="max-w-md mx-auto bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4 rounded-lg shadow-md">
+    <div className="flex items-center">
+      <svg className="w-10 h-10 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 12h2m-1-1v2m-7 9h18a2 2 0 002-2V5a2 2 0 00-2-2H4a2 2 0 00-2 2v14a2 2 0 002 2z" />
+      </svg>
+      <p className="text-3xl font-medium">
+        Error: {error}
+      </p>
+    </div>
+      </div>
+      </div>
+    );
   return (
     <div className="w-full h-screen flex justify-center items-center">
     <div className='bg-white my-10 md:mx-20 px-4 py-10 rounded-2xl shadow-2xl w-full sm:w-96 mx-20'>

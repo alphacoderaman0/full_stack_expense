@@ -21,7 +21,7 @@ export async function PUT(request, { params }) {
     const updatedExpense = await Expense.findByIdAndUpdate(
       id,
       { title, amount },
-      { new: true }
+      { new: true , runValidators: true}
     );
 
     if (!updatedExpense) {
@@ -47,7 +47,7 @@ export async function GET(request, { params }) {
 
     // Find the expense by ID
     const expense = await Expense.findById(id);
-
+    console.log(expense.createdAt, expense.updatedAt);
     // Handle case where the expense is not found
     if (!expense) {
       return NextResponse.json(

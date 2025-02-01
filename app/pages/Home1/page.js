@@ -5,17 +5,23 @@ import Link from "next/link";
 
 export default function Home1() {
   const [expenses, setExpenses] = useState([]);
-
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const fetchExpenses = async () => {
-    const res = await fetch("/api/expenses/new");
-    const data = await res.json();
-    if (data.success) {
-      // Sort expenses by date in descending order to show the latest one at the top
-      const sortedExpenses = data.expenses.sort(
-        (a, b) => new Date(b.date) - new Date(a.date)
-      );
-      setExpenses(sortedExpenses);
-    }
+    try {
+      const res = await fetch("/api/expenses/new");
+      const data = await res.json();
+      if (data.success) {
+        const sortedExpenses = data.expenses.sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        );
+        setExpenses(sortedExpenses);
+      }
+      setLoading(false)
+      
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);    }
   };
 
   useEffect(() => {
@@ -58,6 +64,29 @@ export default function Home1() {
       alert("An error occurred while logging out");
     }
   };
+  if (loading) return (
+  <div className="absolute right-1/2 bottom-1/2 transform translate-x-1/2 translate-y-1/2">
+  <div className="p-4 bg-gradient-to-tr animate-spin from-green-500 to-blue-500 via-purple-500 rounded-full">
+      <div className="bg-white rounded-full">
+          <div className="w-24 h-24 rounded-full"></div>
+      </div>
+  </div>
+  </div>
+  );
+  if (error) return(
+    <div className="w-full h-screen flex justify-center items-center sm:mx-20">
+    <div className="max-w-md mx-auto bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4 rounded-lg shadow-md">
+  <div className="flex items-center">
+    <svg className="w-10 h-10 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 12h2m-1-1v2m-7 9h18a2 2 0 002-2V5a2 2 0 00-2-2H4a2 2 0 00-2 2v14a2 2 0 002 2z" />
+    </svg>
+    <p className="text-3xl font-medium">
+      Error: {error}
+    </p>
+  </div>
+    </div>
+    </div>
+  );
 
   return (
     <div className="px-4 flex justify-center w-full items-center my-10">
@@ -117,6 +146,9 @@ export default function Home1() {
                   </p>
                   <p className="text-sm sm:text-base">
                     <b>Created at:</b> {new Date(expense.date).toLocaleDateString()}
+                  </p>
+                  <p className="text-sm sm:text-base">
+                    <b>Last Updated:</b> {new Date(expense.updatedAt).toLocaleString()}
                   </p>
                 </div>
               </div>
