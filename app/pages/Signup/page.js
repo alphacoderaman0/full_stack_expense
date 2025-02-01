@@ -56,8 +56,7 @@ export default function Signup() {
   };
 
   return (
-   
-    <div className="px-4 flex justify-center w-full items-center my-10 ">
+    <div className="w-full h-screen flex justify-center items-center px-4 my-10">
       {/* main Div Starts */}
       <div className="max-w-lg w-full bg-gradient-to-r from-blue-800 to-purple-600 rounded-xl shadow-2xl overflow-hidden p-8 space-y-8">
         {/* heading starts */}

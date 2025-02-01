@@ -49,7 +49,7 @@ export default function Login() {
   };
 
   return (
-    <div className="w-full flex justify-center">
+    <div className="w-full h-screen flex justify-center items-center">
       <div className="max-w-md w-full bg-gradient-to-r from-blue-800 to-purple-600 rounded-xl shadow-2xl overflow-hidden p-8 space-y-8 hover:shadow-3xl mx-4">
         <h2 className="text-center text-4xl font-extrabold text-white">Welcome</h2>
         <p className="text-center text-gray-200">Sign in to your account</p>
