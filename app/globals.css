@@ -16,7 +16,7 @@
 
 body {
   background-image:linear-gradient(to left , #1e40af ,  #9333ea  );
-  font-family:cursive;
+  /* font-family:cursive; */
   font-optical-sizing: auto;
   font-weight: 500;
   font-style: normal;
