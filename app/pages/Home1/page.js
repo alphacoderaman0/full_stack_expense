@@ -142,13 +142,13 @@ export default function Home1() {
                     <b>Title:</b> {expense.title}
                   </p>
                   <p className="text-sm sm:text-base">
-                    <b>Amount:</b> 💲{expense.amount}
+                    <b>Amount:</b><b className="text-lg"> ₹</b> {expense.amount}
                   </p>
                   <p className="text-sm sm:text-base">
-                    <b>Created at:</b> {new Date(expense.date).toLocaleDateString()}
+                    <b>Created at:</b> {new Date(expense.created_at).toLocaleString()}
                   </p>
                   <p className="text-sm sm:text-base">
-                    <b>Last Updated:</b> {new Date(expense.updatedAt).toLocaleString()}
+                    <b>Last Updated:</b> {new Date(expense.updated_at).toLocaleString()}
                   </p>
                 </div>
               </div>
