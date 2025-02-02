@@ -37,8 +37,9 @@ export default function Login() {
 
       const data = await res.json();
       
-      if (res.ok) {
-        localStorage.setItem('token', data.token); // Save token to localStorage
+      if (res.ok && data.userId) { 
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userId', data.userId);
         router.push('/pages/Home1'); // Redirect to dashboard
       } else {
         setErrorMessage(data.message || 'Invalid credentials');

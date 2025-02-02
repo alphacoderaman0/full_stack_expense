@@ -7,7 +7,6 @@ const AddExpense = () => {
   const [form, setForm] = useState({ title: '', amount: '' });
   const [errors, setErrors] = useState({ title: '', amount: '' });
   const navigate = useRouter();
-
   const validateForm = () => {
     const newErrors = { title: '', amount: '' };
     let isValid = true;
@@ -16,7 +15,6 @@ const AddExpense = () => {
       newErrors.title = 'Title is required';
       isValid = false;
     }
-
     if (!form.amount) {
       newErrors.amount = 'Amount is required';
       isValid = false;
@@ -28,16 +26,19 @@ const AddExpense = () => {
     setErrors(newErrors);
     return isValid;
   };
-
   const addExpense = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) return;
-
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      alert("User not found. Please login again.");
+      return;
+    }
     const res = await fetch('/api/expenses/new', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify({...form , userId}),
     });
 
     const data = await res.json();
@@ -45,6 +46,9 @@ const AddExpense = () => {
       setForm({ title: '', amount: '' });
       navigate.push('/pages/Home1');
     }
+  else {
+    alert("Failed to add expense: " + data.message);
+  }
   };
 
   return (

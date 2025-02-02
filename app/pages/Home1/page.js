@@ -9,26 +9,31 @@ export default function Home1() {
   const [error, setError] = useState("");
   const fetchExpenses = async () => {
     try {
-      const res = await fetch("/api/expenses/new");
+      const userId = localStorage.getItem("userId");
+      console.log(userId);
+      if (!userId) return;
+  
+      console.log("Fetching expenses for user:", userId);
+  
+      const res = await fetch(`/api/expenses/new?userId=${userId}`, { method: "GET" });
       const data = await res.json();
+  
       if (data.success) {
-        const sortedExpenses = data.expenses.sort(
-          (a, b) => new Date(b.date) - new Date(a.date)
-        );
+        const sortedExpenses = data.expenses;
         setExpenses(sortedExpenses);
       }
-      setLoading(false)
-      
+      setLoading(false);
     } catch (err) {
       setError(err.message);
-      setLoading(false);    }
+      setLoading(false);
+    }
   };
-
+  
   useEffect(() => {
     fetchExpenses();
   }, []);
-
-  // Handle delete function
+  
+  
   const handleDelete = async (id) => {
     await fetch("/api/expenses/new", {
       method: "DELETE",

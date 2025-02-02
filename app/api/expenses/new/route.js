@@ -2,29 +2,39 @@ import dbConnect from '@/app/lib/dbconnect';
 import Expense from '@/app/models/expense';
 import { NextResponse } from 'next/server';
 
-// Create a new expense
-export async function POST(request) {
+// Create Expense
+export async function POST(req) {
   try {
     await dbConnect();
+    const { title, amount, date, userId } = await req.json();
 
-    const body = await request.json();
-    const expense = await Expense.create(body);
+    if (!userId) {
+      return NextResponse.json({ success: false, message: "User ID is required" }, { status: 400 });
+    }
 
-    return NextResponse.json({ success: true, expense });
+    const newExpense = new Expense({ title, amount, date, userId });
+    await newExpense.save();
+
+    return NextResponse.json({ success: true, message: "Expense added", expense: newExpense }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    return NextResponse.json({ success: false, message: "Expense add failed: " + error.message }, { status: 500 });
   }
 }
 
-// Get all expenses
-export async function GET() {
+// ✅ Fetch User-Specific Expenses
+export async function GET(req) {
   try {
     await dbConnect();
+    const userId = req.nextUrl.searchParams.get("userId"); // Query Params se le rahe hain
 
-    const expenses = await Expense.find({});
-    return NextResponse.json({ success: true, expenses });
+    if (!userId) {
+      return NextResponse.json({ success: false, message: "User ID is required" }, { status: 400 });
+    }
+
+    const expenses = await Expense.find({ userId }).sort({ date: -1 }); // Latest first
+    return NextResponse.json({ success: true, expenses }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    return NextResponse.json({ success: false, message: "Failed to fetch expenses: " + error.message }, { status: 500 });
   }
 }
 
