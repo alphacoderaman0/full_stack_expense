@@ -60,7 +60,7 @@ export default function Home1() {
 
       if (data?.message === "Logged out successfully") {
         // Redirect to login page after logout
-        window.location.assign("/pages/Login");
+        window.location.assign("/");
       } else {
         alert(data?.message || "Something went wrong");
       }
