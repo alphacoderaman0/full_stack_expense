@@ -125,7 +125,7 @@ export default function AboutPage() {
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
             <div className="relative overflow-hidden rounded-2xl shadow-lg group h-80">
                 <img
-                src="/images/about1.jpg"
+                src="/images/About1.jpg"
                 alt="Xpenso vision 1"
                 className="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-60"
                 />
