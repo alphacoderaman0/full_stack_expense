@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import BlobBackground from "../BlobBackground/page";
 import Navbar from "../Navbar/page";
 import { motion, AnimatePresence } from "framer-motion";
@@ -108,16 +108,33 @@ function SortableFeature({ id, icon, title, desc, openId, setOpenId }) {
 }
 
 export default function FAQPage() {
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
   const [openId, setOpenId] = useState(null);
   const [showAuthForm, setShowAuthForm] = useState(false);
-  const [faqs, setFaqs] = useState(() => {
+   const [faqs, setFaqs] = useState(initialFaqs);
+
+  useEffect(() => {
+    // Only runs in the browser
     const saved = localStorage.getItem('faqOrder');
     if (saved) {
       const savedIds = JSON.parse(saved);
-      return savedIds.map(id => initialFaqs.find(faq => faq.id === id)).filter(Boolean);
+      const reordered = savedIds
+        .map(id => initialFaqs.find(faq => faq.id === id))
+        .filter(Boolean); // Remove nulls
+      setFaqs(reordered);
     }
-    return initialFaqs;
-  });
+  }, []);
+  // const [faqs, setFaqs] = useState(() => {
+  //   const saved = localStorage.getItem('faqOrder');
+  //   if (saved) {
+  //     const savedIds = JSON.parse(saved);
+  //     return savedIds.map(id => initialFaqs.find(faq => faq.id === id)).filter(Boolean);
+  //   }
+  //   return initialFaqs;
+  // });
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -153,7 +170,7 @@ export default function FAQPage() {
           Frequently Asked Questions
         </motion.h2>
 <p className="text-sm text-gray-600 italic mb-6">💡 Double click on a question to expand or collapse the answer.</p>
-
+        {hasMounted && (
         <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={faqs} strategy={rectSortingStrategy}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
@@ -170,7 +187,7 @@ export default function FAQPage() {
               ))}
             </div>
           </SortableContext>
-        </DndContext>
+        </DndContext>)}
       </section>
     </main>
   );
