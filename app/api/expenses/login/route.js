@@ -1,5 +1,5 @@
 import dbConnect from '@/app/lib/dbconnect';
-import {User} from '@/app/models/user'; // Assuming User is defined in the same file as Expense
+import { User } from '@/app/models/user';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
@@ -8,52 +8,50 @@ export async function POST(request) {
   try {
     await dbConnect();
 
-    const { email, password } = await request.json();
+    const { email, username, password } = await request.json();
 
-    // Validation
-    if (!email || !password) {
+    if (!password || (!email && !username)) {
       return NextResponse.json(
-        { success: false, message: 'Email and password are required' },
+        { success: false, message: 'Email/Username and password are required' },
         { status: 400 }
       );
     }
 
-    // Check if the user exists
-    const user = await User.findOne({ email });
+    const user = await User.findOne(
+      email ? { email } : { username }
+    );
+
     if (!user) {
-      console.log("User not found for email:", email); // Debugging log
       return NextResponse.json(
-        { success: false, message: 'Invalid email or password' },
+        { success: false, message: 'Invalid credentials' },
         { status: 401 }
       );
     }
 
-    // Verify the password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      console.log("Password mismatch for user:", email); // Debugging log
       return NextResponse.json(
-        { success: false, message: 'Invalid email or password' },
+        { success: false, message: 'Invalid credentials' },
         { status: 401 }
       );
     }
 
-    // Generate JWT token
     const token = jwt.sign(
       { id: user._id, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
+
     const response = NextResponse.json({
       success: true,
       message: 'Login successful',
       token,
-      userId: user._id // Send the token to the client
+      userId: user._id
     });
-    response.cookies.set('token',token)
-    return response
+
+    response.cookies.set('token', token);
+    return response;
   } catch (error) {
-    console.log("Error occurred during login:", error.message); // Debugging log
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }

@@ -68,8 +68,8 @@ export default function DeveloperPage() {
 
         <motion.h3 className="text-2xl font-semibold text-indigo-700 mb-4">Let's Connect & Build Something Amazing!</motion.h3>
         <p className="text-base text-indigo-600 mb-8">
-          Email: aman.mittal@example.com | Portfolio: www.amanmittal.dev <br />
-          GitHub: github.com/amanmittal | LinkedIn: linkedin.com/in/amanmittal
+          Email: amanmittal0004g@gmail.com.com | Portfolio: www.alphacoderaman.netlify.app <br />
+          GitHub: github.com/alphacoderaman0 | LinkedIn: linkedin.com/in/amanmittal2004
         </p>
 
         <div className="flex justify-center mt-10">
