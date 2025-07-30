@@ -7,16 +7,18 @@ export async function GET(request) {
   try {
     await dbConnect();
 
-    // Step 1: Token extract from cookies
-    const token = request.cookies.get('token')?.value;
+    // Step 1: Token extract from Authorization header
+    const authHeader = request.headers.get('authorization');
 
-    if (!token) {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
-        { success: false, message: 'Unauthorized. No token found.' },
+        { success: false, message: 'Unauthorized. No token provided.' },
         { status: 401 }
       );
     }
 
+    const token = authHeader.split(' ')[1]; // Extract token after "Bearer "
+    
     // Step 2: Verify token
     let decoded;
     try {
@@ -27,7 +29,7 @@ export async function GET(request) {
         { status: 401 }
       );
     }
-
+    
     const userId = decoded.id;
 
     // Step 3: Find user by ID (exclude password)
