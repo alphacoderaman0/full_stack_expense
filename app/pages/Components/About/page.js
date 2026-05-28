@@ -16,7 +16,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { FaShieldAlt, FaChartLine, FaMobileAlt, FaUserFriends } from "react-icons/fa";
 import AuthModal from "../Modals/AuthModal/page";
-
+import Image from "next/image";
 function SortableFeature({ id, icon, title, desc }) {
   const {
     attributes,
@@ -124,9 +124,11 @@ export default function AboutPage() {
         </motion.div>
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
             <div className="relative overflow-hidden rounded-2xl shadow-lg group h-80">
-                <img
-                src="/images/About1.jpg"
+                <Image
+                src={"/images/About1.jpg"}
                 alt="Xpenso vision 1"
+                width={400} 
+                height={300}
                 className="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-60"
                 />
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -134,9 +136,11 @@ export default function AboutPage() {
                 </div>
             </div>
             <div className="relative overflow-hidden rounded-2xl shadow-lg group h-80">
-                <img
-                src="/images/about2.jpg"
+                <Image
+                src={"/images/about2.jpg"}
                 alt="Xpenso vision 2"
+                width={400}
+                height={300}
                 className="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-60"
                 />
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">

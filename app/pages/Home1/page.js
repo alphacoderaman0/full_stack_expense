@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home1() {
   const [expenses, setExpenses] = useState([]);
@@ -131,13 +132,13 @@ export default function Home1() {
                     onClick={() => handleDelete(expense._id)}
                     className="p-2 rounded-full shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
                   >
-                    <img src="/images/delete.png" alt="delete" className="w-6 sm:w-7" />
+                    <Image src="/images/delete.png" alt="delete" className="w-6 sm:w-7" width={28} height={28} />
                   </button>
                   <Link
                     href={`/pages/UpdateExpense/${expense._id}`}
                     className="p-2 rounded-full shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
                   >
-                    <img src="/images/edit.png" alt="edit" className="w-6 sm:w-7" />
+                    <Image src="/images/edit.png" alt="edit" className="w-6 sm:w-7" width={28} height={28} />
                   </Link>
                 </div>
 

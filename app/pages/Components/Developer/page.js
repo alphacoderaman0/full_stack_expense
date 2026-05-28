@@ -6,7 +6,7 @@ import Navbar from "../Navbar/page";
 import { motion } from "framer-motion";
 import { FaReact, FaNodeJs, FaDatabase, FaLock, FaCloud, FaCode, FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
 import AuthModal from "../Modals/AuthModal/page";
-
+import Image from "next/image";
 export default function DeveloperPage() {
     const [showAuthForm , setShowAuthForm] = useState(false)
   return (
@@ -86,9 +86,11 @@ export default function DeveloperPage() {
                 Passionate about crafting modern web apps using MERN, Next.js, and more. Dedicated to performance, scalability, and UX.
               </p>
             </div>
-            <img
+            <Image
               src="/images/new.jpg"
               alt="Aman Mittal"
+              width={192}
+              height={192}
               className="md:w-48 md:h-48 w-32 h-32 rounded-full object-cover shadow-md border-4 border-indigo-200"
             />
           </motion.div>

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 import Cookies from 'js-cookie';
+import Image from 'next/image';
 
 export default function PasswordSection() {
   const [newPassword, setNewPassword] = useState('');
@@ -119,9 +120,11 @@ export default function PasswordSection() {
           transition={{ delay: 0.3, duration: 0.6 }}
           className="hidden lg:flex items-center justify-center w-full md:w-1/2 bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100"
         >
-          <img
+          <Image
             src="/images/changePass.png"
             alt="Change Password Illustration"
+            width={300}
+            height={300}
             className="max-w-[90%] h-auto object-contain drop-shadow-2xl"
           />
         </motion.div>
