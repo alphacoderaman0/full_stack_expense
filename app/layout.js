@@ -53,8 +53,10 @@ export const metadata = {
       "Track expenses, manage budgets, and visualize financial trends securely with XpensoSync.",
     creator: "@xpensosync",
     images: ["https://www.xpensosync.com/twitter-card.png"]
-  },
-  themeColor: "#4338ca",
+  }
+};
+export const viewport = {
+  themeColor: "#000000",
 };
 
 
