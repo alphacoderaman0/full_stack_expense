@@ -6,7 +6,10 @@ const ExpenseSchema = new mongoose.Schema(
     amount: { type: Number, required: true },
     description: { type: String },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    tagIds: { type: String },
+    tagIds: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tag" }],
+      default: [],
+    },
   },
   { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } }
 );

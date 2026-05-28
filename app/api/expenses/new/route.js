@@ -29,7 +29,7 @@ export async function POST(req) {
       date, 
       userId,
       description: description || "",
-      tagIds: tagIds || "" 
+      tagIds: tagIds || []
     });
     
     await logExpenseChange(newExpense, 'created', userId);

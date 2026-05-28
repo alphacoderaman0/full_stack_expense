@@ -23,7 +23,7 @@ export async function POST(req) {
       date: date || new Date(),
       userId,
       description: description || "",
-      tagIds: tagIds || ""
+      tagIds: tagIds || []
     });
 
     // Record in history

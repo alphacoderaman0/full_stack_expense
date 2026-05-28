@@ -9,7 +9,10 @@ const ExpenseHistorySchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String },
   amount: { type: Number, required: true },
-  tagIds: { type: String }, // Store the tags at time of change
+  tagIds: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tag" }],
+    default: [],
+  },
   action: { 
     type: String, 
     enum: ['created', 'updated', 'deleted'],

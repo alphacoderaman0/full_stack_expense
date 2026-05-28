@@ -3,30 +3,36 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaPlus, FaEdit, FaTrash, FaSearch } from 'react-icons/fa';
+import Cookies from "js-cookie";
 
 const ITEMS_PER_PAGE = 10;
 
 export default function ExpensesSection() {
-  const [expenses, setExpenses] = useState([
-    { id: 1, title: 'Groceries', amount: 2500, description: 'Walmart purchase' },
-    { id: 2, title: 'Fuel', amount: 1500, description: 'Petrol for car' },
-    { id: 3, title: 'Internet', amount: 900, description: 'Monthly broadband' },
-    { id: 4, title: 'Dining', amount: 3200, description: 'Family dinner' },
-    { id: 5, title: 'Gym', amount: 1200, description: 'Monthly membership' },
-    { id: 6, title: 'Books', amount: 500, description: 'React books' },
-    { id: 7, title: 'Electricity', amount: 1800, description: 'Monthly bill' },
-    { id: 8, title: 'Snacks', amount: 300, description: 'Grocery snacks' },
-    { id: 9, title: 'Phone', amount: 1300, description: 'Recharge' },
-    { id: 10, title: 'Software', amount: 2700, description: 'SaaS Tools' },
-  ]);
+  const [expenses, setExpenses] = useState([]);
+  const UserId = Cookies.get('userData') ? JSON.parse(Cookies.get('userData'))._id : null;
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState('');
   const [filterRange, setFilterRange] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [editId, setEditId] = useState(null);
-  const [formData, setFormData] = useState({ title: '', amount: '', description: '' });
-
+  const [formData, setFormData] = useState({ title: '', amount: '', description: ''});
+  const getAllExpenses = async () => {
+    try {
+      const res = await fetch(`/api/expenses/get?userId=${UserId}&page=${currentPage}&limit=${ITEMS_PER_PAGE}`);
+      const data = await res.json();
+      if (data.success) {
+        setExpenses(data.data);
+      } else {
+        console.error("Failed to fetch expenses:", data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching expenses:", error);
+    }
+  };
+  useEffect(() => {
+    getAllExpenses();
+  }, [currentPage]);
   useEffect(() => {
     let result = [...expenses];
     if (search) {
@@ -47,12 +53,26 @@ export default function ExpensesSection() {
     currentPage * ITEMS_PER_PAGE
   );
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formData.title || !formData.amount) return;
     if (editId) {
+      await fetch('/api/expenses/edit', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...formData, id: editId,userId: UserId }),
+      });
       setExpenses(prev => prev.map(e => (e.id === editId ? { ...e, ...formData } : e)));
     } else {
-      setExpenses(prev => [...prev, { ...formData, id: Date.now() }]);
+      await fetch('/api/expenses/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...formData, userId: UserId }),
+      });
+      setExpenses(prev => [...prev, { ...formData, id: Date.now(), userId: UserId }]);
     }
     resetForm();
   };
@@ -65,12 +85,18 @@ export default function ExpensesSection() {
 
   const handleEdit = (expense) => {
     setFormData(expense);
-    setEditId(expense.id);
+    setEditId(expense._id);
     setShowModal(true);
   };
 
-  const handleDelete = (id) => {
-    setExpenses(prev => prev.filter(e => e.id !== id));
+  const handleDelete = async (id) => {
+    await fetch('/api/expenses/delete', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',      },
+      body: JSON.stringify({ id, userId: UserId }),
+    });
+    setExpenses(prev => prev.filter(e => e._id !== id));
   };
 
   return (
@@ -123,8 +149,8 @@ export default function ExpensesSection() {
             </tr>
           </thead>
           <tbody>
-            {currentData.map((expense) => (
-              <tr key={expense.id} className="hover:bg-indigo-50 transition">
+            {currentData.reverse().map((expense) => (
+              <tr key={expense._id} className="hover:bg-indigo-50 transition">
                 <td className="px-4 py-2 text-center">{expense.title}</td>
                 <td className="px-4 py-2 text-center">₹{expense.amount}</td>
                 <td className="px-4 py-2 text-center">{expense.description}</td>
@@ -132,7 +158,7 @@ export default function ExpensesSection() {
                   <button onClick={() => handleEdit(expense)} className="text-indigo-600 hover:text-indigo-800">
                     <FaEdit />
                   </button>
-                  <button onClick={() => handleDelete(expense.id)} className="text-red-500 hover:text-red-700">
+                  <button onClick={() => handleDelete(expense._id)} className="text-red-500 hover:text-red-700">
                     <FaTrash />
                   </button>
                 </td>
