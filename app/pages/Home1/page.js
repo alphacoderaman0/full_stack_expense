@@ -46,7 +46,7 @@ export default function Home1() {
   const handleLogout = async () => {
     try {
       // Call the logout API to clear the token cookie
-      const res = await fetch("/api/expenses/logout", {
+      const res = await fetch("/api/logout", {
         method: "GET",
       });
 

@@ -1,85 +1,121 @@
 import dbConnect from '@/app/lib/dbconnect';
 import Expense from '@/app/models/expense';
+import ExpenseHistory from '@/app/models/expenseHistory';
 import { NextResponse } from 'next/server';
 
-// Create Expense
+// Helper to create history records
+const logExpenseChange = async (expense, action, userId, previousData = null) => {
+  await ExpenseHistory.create({
+    expenseId: expense._id,
+    title: expense.title,
+    description: expense.description,
+    amount: expense.amount,
+    tagIds: expense.tagIds,
+    action,
+    changedBy: userId,
+    previousData // Optional: Store complete previous state
+  });
+};
+
+// CREATE Expense
 export async function POST(req) {
   try {
     await dbConnect();
-    const { title, amount, date, userId } = await req.json();
+    const { title, amount, date, userId, description, tagIds } = await req.json();
 
-    if (!userId) {
-      return NextResponse.json({ success: false, message: "User ID is required" }, { status: 400 });
-    }
+    const newExpense = await Expense.create({ 
+      title, 
+      amount, 
+      date, 
+      userId,
+      description: description || "",
+      tagIds: tagIds || "" 
+    });
+    
+    await logExpenseChange(newExpense, 'created', userId);
 
-    const newExpense = new Expense({ title, amount, date, userId });
-    await newExpense.save();
-
-    return NextResponse.json({ success: true, message: "Expense added", expense: newExpense }, { status: 201 });
+    return NextResponse.json({ 
+      success: true, 
+      data: newExpense 
+    }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ success: false, message: "Expense add failed: " + error.message }, { status: 500 });
+    return NextResponse.json({ 
+      success: false, 
+      error: error.message 
+    }, { status: 500 });
   }
 }
 
-// ✅ Fetch User-Specific Expenses
-export async function GET(req) {
+// UPDATE Expense (Creates history on EVERY change)
+export async function PUT(req) {
   try {
     await dbConnect();
-    const userId = req.nextUrl.searchParams.get("userId"); // Query Params se le rahe hain
+    const { id, userId, ...updateData } = await req.json();
 
-    if (!userId) {
-      return NextResponse.json({ success: false, message: "User ID is required" }, { status: 400 });
-    }
-
-    const expenses = await Expense.find({ userId }).sort({ date: -1 }); // Latest first
-    return NextResponse.json({ success: true, expenses }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ success: false, message: "Failed to fetch expenses: " + error.message }, { status: 500 });
-  }
-}
-
-// Delete an expense by ID
-export async function DELETE(request) {
-  try {
-    await dbConnect();
-
-    const { id } = await request.json(); // Extract ID from the request body
-    if (!id) {
-      return NextResponse.json({ success: false, message: "ID is required" }, { status: 400 });
-    }
-
-    await Expense.findByIdAndDelete(id);
-    return NextResponse.json({ success: true, message: "Expense deleted successfully" });
-  } catch (error) {
-    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
-  }
-}
-
-// Update an expense by ID
-export async function PUT(request) {
-  try {
-    await dbConnect();
-
-    const { id, title, amount } = await request.json(); // Extract data from request body
-    if (!id || !title || !amount) {
-      return NextResponse.json(
-        { success: false, message: "ID, title, and amount are required" },
-        { status: 400 }
-      );
+    // Get current state before update
+    const currentExpense = await Expense.findById(id);
+    if (!currentExpense) {
+      return NextResponse.json({ 
+        success: false, 
+        error: "Expense not found" 
+      }, { status: 404 });
     }
 
     const updatedExpense = await Expense.findByIdAndUpdate(
       id,
-      { title, amount },
-      { new: true, runValidators: true } // Return updated document and validate inputs
+      updateData,
+      { new: true, runValidators: true }
     );
 
-    if (!updatedExpense) {
-      return NextResponse.json({ success: false, message: "Expense not found" }, { status: 404 });
+    await logExpenseChange(
+      updatedExpense, 
+      'updated', 
+      userId,
+      { // Store previous values
+        title: currentExpense.title,
+        amount: currentExpense.amount,
+        description: currentExpense.description,
+        tagIds: currentExpense.tagIds
+      }
+    );
+
+    return NextResponse.json({ 
+      success: true, 
+      data: updatedExpense 
+    });
+  } catch (error) {
+    return NextResponse.json({ 
+      success: false, 
+      error: error.message 
+    }, { status: 500 });
+  }
+}
+
+// DELETE Expense (With history)
+export async function DELETE(req) {
+  try {
+    await dbConnect();
+    const { id, userId } = await req.json();
+
+    const expenseToDelete = await Expense.findById(id);
+    if (!expenseToDelete) {
+      return NextResponse.json({ 
+        success: false, 
+        error: "Expense not found" 
+      }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, expense: updatedExpense });
+    await logExpenseChange(expenseToDelete, 'deleted', userId);
+    await Expense.findByIdAndDelete(id);
+
+    return NextResponse.json({ 
+      success: true, 
+      message: "Expense deleted" 
+    });
   } catch (error) {
-    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    return NextResponse.json({ 
+      success: false, 
+      error: error.message 
+    }, { status: 500 });
   }
 }

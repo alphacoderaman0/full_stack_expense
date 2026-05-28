@@ -48,7 +48,7 @@ export default function AuthModal({ onClose }) {
     }
 
     try {
-      const res = await fetch('/api/expenses/signup', {
+      const res = await fetch('/api/signup', {
         method: 'POST',
         body: JSON.stringify(formData),
         headers: { 'Content-Type': 'application/json' },
@@ -57,7 +57,7 @@ export default function AuthModal({ onClose }) {
       const data = await res.json();
 
       if (res.ok) {
-        const loginRes = await fetch('/api/expenses/login', {
+        const loginRes = await fetch('/api/login', {
           method: 'POST',
           body: JSON.stringify({ email: formData.email, password: formData.password }),
           headers: { 'Content-Type': 'application/json' },
@@ -89,7 +89,7 @@ export default function AuthModal({ onClose }) {
     }
 
     try {
-      const res = await fetch('/api/expenses/login', {
+      const res = await fetch('/api/login', {
         method: 'POST',
         body: JSON.stringify(formData),
         headers: { 'Content-Type': 'application/json' },
