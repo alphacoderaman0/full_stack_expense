@@ -5,19 +5,19 @@ import { NextResponse } from 'next/server';
 export async function GET(req) {
   try {
     await dbConnect();
-    const expenseId = req.nextUrl.searchParams.get('expenseId');
+    const userId = req.nextUrl.searchParams.get('userId');
     const limit = parseInt(req.nextUrl.searchParams.get('limit')) || 10;
 
     // Validation
-    if (!expenseId) {
+    if (!userId) {
       return NextResponse.json(
-        { success: false, message: "Expense ID is required" },
+        { success: false, message: "User ID is required" },
         { status: 400 }
       );
     }
 
     // Fetch history
-    const history = await ExpenseHistory.find({ expenseId })
+    const history = await ExpenseHistory.find({ changedBy: userId })
       .sort({ createdAt: -1 })
       .limit(limit);
 

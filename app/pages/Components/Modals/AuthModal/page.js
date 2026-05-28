@@ -100,7 +100,7 @@ export default function AuthModal({ onClose }) {
       if (res.ok && data.userId) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('userId', data.userId);
-        router.push('/pages/Home1');
+        router.push('/pages/Components/Dashboard');
       } else {
         setErrorMessage(data.message || 'Invalid credentials');
       }
