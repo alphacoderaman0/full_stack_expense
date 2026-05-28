@@ -14,4 +14,8 @@ const ExpenseSchema = new mongoose.Schema(
   { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } }
 );
 
+if (mongoose.models.Expense && mongoose.models.Expense.schema.path('tagIds')?.instance !== 'Array') {
+  mongoose.deleteModel('Expense');
+}
+
 export default mongoose.models.Expense || mongoose.model('Expense', ExpenseSchema);

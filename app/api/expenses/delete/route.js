@@ -1,7 +1,15 @@
+import mongoose from 'mongoose';
 import dbConnect from '@/app/lib/dbconnect';
 import Expense from '@/app/models/expense';
 import ExpenseHistory from '@/app/models/expenseHistory';
 import { NextResponse } from 'next/server';
+
+const normalizeTagIds = (tagIds) => {
+  const values = Array.isArray(tagIds) ? tagIds : tagIds ? [tagIds] : [];
+  return values
+    .map((tagId) => tagId?._id?.toString?.() || String(tagId))
+    .filter((tagId) => tagId && mongoose.Types.ObjectId.isValid(tagId));
+};
 
 export async function DELETE(req) {
   try {
@@ -17,7 +25,7 @@ export async function DELETE(req) {
     }
 
     // Get expense before deletion
-    const expenseToDelete = await Expense.findById(id);
+    const expenseToDelete = await Expense.findById(id).lean();
     if (!expenseToDelete) {
       return NextResponse.json(
         { success: false, message: "Expense not found" },
@@ -31,7 +39,7 @@ export async function DELETE(req) {
       title: expenseToDelete.title,
       amount: expenseToDelete.amount,
       description: expenseToDelete.description,
-      tagIds: expenseToDelete.tagIds,
+      tagIds: normalizeTagIds(expenseToDelete.tagIds),
       action: "deleted",
       changedBy: userId
     });

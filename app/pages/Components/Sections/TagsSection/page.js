@@ -159,7 +159,7 @@ export default function TagsSection() {
   };
 
   const handleDelete = async (id) => {
-    if (!userId || !window.confirm('Delete this tag?')) return;
+    if (!userId) return;
 
     try {
       const res = await fetch('/api/expenses/deleteTags', {

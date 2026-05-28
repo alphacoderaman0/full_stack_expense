@@ -1,7 +1,15 @@
+import mongoose from 'mongoose';
 import dbConnect from '@/app/lib/dbconnect';
 import Expense from '@/app/models/expense';
 import ExpenseHistory from '@/app/models/expenseHistory';
 import { NextResponse } from 'next/server';
+
+const normalizeTagIds = (tagIds) => {
+  const values = Array.isArray(tagIds) ? tagIds : tagIds ? [tagIds] : [];
+  return values
+    .map((tagId) => tagId?._id?.toString?.() || String(tagId))
+    .filter((tagId) => tagId && mongoose.Types.ObjectId.isValid(tagId));
+};
 
 export async function POST(req) {
   try {
@@ -23,7 +31,7 @@ export async function POST(req) {
       date: date || new Date(),
       userId,
       description: description || "",
-      tagIds: tagIds || []
+      tagIds: normalizeTagIds(tagIds)
     });
 
     // Record in history

@@ -1,12 +1,24 @@
+import mongoose from 'mongoose';
 import dbConnect from '@/app/lib/dbconnect';
 import Expense from '@/app/models/expense';
 import ExpenseHistory from '@/app/models/expenseHistory';
 import { NextResponse } from 'next/server';
 
+const normalizeTagIds = (tagIds) => {
+  const values = Array.isArray(tagIds) ? tagIds : tagIds ? [tagIds] : [];
+  return values
+    .map((tagId) => tagId?._id?.toString?.() || String(tagId))
+    .filter((tagId) => tagId && mongoose.Types.ObjectId.isValid(tagId));
+};
+
 export async function PUT(req) {
   try {
     await dbConnect();
-    const { id, userId, ...updateData } = await req.json();
+    const { id, userId, tagIds, ...restData } = await req.json();
+    const updateData = {
+      ...restData,
+      tagIds: normalizeTagIds(tagIds),
+    };
 
     // Validation
     if (!id || !userId) {
@@ -17,7 +29,7 @@ export async function PUT(req) {
     }
 
     // Get current expense before update
-    const currentExpense = await Expense.findById(id);
+    const currentExpense = await Expense.findById(id).lean();
     if (!currentExpense) {
       return NextResponse.json(
         { success: false, message: "Expense not found" },
@@ -29,7 +41,7 @@ export async function PUT(req) {
     const updatedExpense = await Expense.findByIdAndUpdate(
       id,
       updateData,
-      { new: true }
+      { new: true, runValidators: true }
     );
 
     // Record in history

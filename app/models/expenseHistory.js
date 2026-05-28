@@ -22,4 +22,8 @@ const ExpenseHistorySchema = new mongoose.Schema({
   previousData: { type: Object } // Store complete previous state (optional)
 }, { timestamps: true });
 
+if (mongoose.models.ExpenseHistory && mongoose.models.ExpenseHistory.schema.path('tagIds')?.instance !== 'Array') {
+  mongoose.deleteModel('ExpenseHistory');
+}
+
 export default mongoose.models.ExpenseHistory || mongoose.model('ExpenseHistory', ExpenseHistorySchema);
